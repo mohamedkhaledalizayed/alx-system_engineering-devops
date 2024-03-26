@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
+# Installing nginx on default port using apt-get
 
-# This script configures nginx server to redirect to another page
+# Installation of nginx using the get
+sudo apt-get update -y
+sudo apt-get install nginx -y
 
-apt-get update
-apt-get install -y nginx
+# Set file paths
+NGINX_CONF="/etc/nginx/sites-available/default"
+FILE_PATH="/var/www/html/index.html"
 
-mkdir /etc/nginx/html
-echo "Hello World!" > /etc/nginx/html/index.html
-printf %s "server {
-    listen 80;
-    listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index index.html index.htm;
-    location /redirect_me {
-	return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-}" > /etc/nginx/sites-available/default
 
-service nginx restart
+# Creating an index file that displays 'Hello World!'
+sudo bash -c "echo 'Hello World!' > $FILE_PATH"
+
+
+# Setting up redirect_me to a youtube video
+sudo sed -i '/server_name _;/a\		rewrite \/redirect_me https:\/\/www.youtube.com\/watch?v=QH2-TGUlwu4 permanent;' "$NGINX_CONF"
+
+
+# Restarting nginx
+sudo service nginx restart
