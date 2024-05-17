@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Function to check if Gunicorn is running
+check_gunicorn_running() {
+    pgrep gunicorn >/dev/null 2>&1
+    return $?
+}
+
+# Function to gracefully reload Gunicorn
+graceful_reload_gunicorn() {
+    echo "Reloading Gunicorn gracefully..."
+    kill -HUP $(pgrep gunicorn)
+    echo "Gunicorn reloaded successfully."
+}
+
+# Check if Gunicorn is running
+if check_gunicorn_running; then
+    # If Gunicorn is running, perform graceful reload
+    graceful_reload_gunicorn
+else
+    # If Gunicorn is not running, notify and exit
+    echo "Gunicorn is not currently running."
+    exit 1
+fi
